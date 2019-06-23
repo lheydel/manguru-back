@@ -1,13 +1,18 @@
 language: node_js
 node_js:
   - 12
+
 services:
   - mongodb
+  - docker
+
 cache:
   directories:
     - node_modules
+
 scripts:
   - npm run build
-  - npm run test
+  # - npm run test
+
 git:
   depth: 3
