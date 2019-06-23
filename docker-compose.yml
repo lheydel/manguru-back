@@ -2,7 +2,6 @@ version: "3.7"
 
 services: 
   app:
-    container_name: app
     restart: always
     build: .
     # Override cmd in Dockerfile (here because we don't want it in prod)
@@ -14,14 +13,13 @@ services:
     ports:
       - "8080:8080"
       - "5858:5858"
-    # links:
-    #   - mongo
+    links:
+      - mongo
   
   # MONGO + VOLUMES --> NOT ON WINDOWS
-  # mongo:
-  #   container_name: mongo
-  #   image: mongo
+  mongo:
+    image: mongo
   #   volumes: 
   #     - ./data:/data/db
-  #   ports:
-  #     - "27017:27017"
+    ports:
+      - "27017:27017"
