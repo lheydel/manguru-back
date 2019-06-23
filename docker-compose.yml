@@ -1,0 +1,27 @@
+version: "3.7"
+
+services: 
+  app:
+    container_name: app
+    restart: always
+    build: .
+    # Override cmd in Dockerfile (here because we don't want it in prod)
+    command: npm run debug
+    # Override src by mounting the current directory as a volume 
+    # --> code inside running container will update whenever local files are updated
+    volumes:
+      - .:/src
+    ports:
+      - "8080:8080"
+      - "5858:5858"
+    # links:
+    #   - mongo
+  
+  # MONGO + VOLUMES --> NOT ON WINDOWS
+  # mongo:
+  #   container_name: mongo
+  #   image: mongo
+  #   volumes: 
+  #     - ./data:/data/db
+  #   ports:
+  #     - "27017:27017"
