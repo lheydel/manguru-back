@@ -1,5 +1,5 @@
 import express from 'express';
-import * as indexController from '../routes/index';
+import * as indexController from './index';
 import * as userController from './user/UserController';
 
 const app = express();
