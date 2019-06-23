@@ -9,3 +9,5 @@ cache:
 scripts:
   - npm run build
   - npm run test
+git:
+  depth: 3
