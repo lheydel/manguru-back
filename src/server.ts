@@ -6,7 +6,7 @@ import { APP_PORT } from './config/app';
 import { MONGO_URI } from './config/mongo';
 
 import * as indexController from './index';
-import { UserController } from './controller/user.controller';
+import { UserController } from './user/user.controller';
 
 
 const app = express();
@@ -34,6 +34,7 @@ app.get('/contact', indexController.getContact);
 // const userController = <UserController> .get('user.ctl');
 const userController = new UserController();
 app.get('/user/name', userController.getName.bind(userController));
+app.get('/user/create', userController.create.bind(userController));
 
 // start serv
 app.listen(APP_PORT, () => {

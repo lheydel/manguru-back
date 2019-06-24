@@ -12,7 +12,7 @@
     "start": "npm run serve",
     "build": "npm run build-ts && npm run tslint",
     "build-ts": "tsc",
-    "debug": "npm run build && npm run watch-debug",
+    "debug": "echo \"npm run build\" && npm run watch-debug",
     "serve": "node dist/server.js",
     "serve-debug": "nodemon --inspect=0.0.0.0:5858 dist/server.js",
     "test": "echo \"jest --forceExit --coverage --verbose\" && exit 0",
@@ -41,6 +41,7 @@
     "nodemon": "^1.18.11",
     "ts-node": "^5.0.0",
     "tslint": "^5.9.1",
+    "typegoose": "^5.7.2",
     "typescript": "^3.4.3",
     "typescript-ioc": "^1.2.5"
   }
