@@ -14,12 +14,16 @@ cache:
 addons:
   sonarcloud:
     organization: lheydel-github
+    token:
+      secure: $SONAR_TOKEN
 
 scripts:
   - npm run build
-  # - npm run test
+  - npm run test
   - sonar-scanner
 
 git:
   depth: 3
   
+notifications:
+  email: false
