@@ -2,30 +2,30 @@ import { prop, Typegoose } from 'typegoose';
 
 export class User extends Typegoose {
     @prop({ required: true, unique: true })
-    private email: String;
+    private email: string;
 
     @prop({ required: true })
-    private name: String;
+    private name: string;
 
-    constructor(email?: String, name?: String) {
+    constructor(email?: string, name?: string) {
         super();
         this.email = email;
         this.name = name;
     }
 
-    public setEmail(email: String) {
+    public setEmail(email: string) {
         this.email = email;
     }
 
-    public getEmail(): String {
+    public getEmail(): string {
         return this.email;
     }
 
-    public setName(name: String) {
+    public setName(name: string) {
         this.name = name;
     }
 
-    public getName(): String {
+    public getName(): string {
         return this.name;
     }
 }

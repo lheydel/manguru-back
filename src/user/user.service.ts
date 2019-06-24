@@ -9,11 +9,11 @@ export class UserService {
     @Inject
     private userRepository: UserRepository;
 
-    public blblbl(): String {
+    public blblbl(): string {
         return 'Blblbl!';
     }
 
-    public async createUser(email: String, name: String) {
+    public async createUser(email: string, name: string) {
         await this.userRepository.save(new User(email, name));
     }
 }
