@@ -11,9 +11,15 @@ cache:
   directories:
     - node_modules
 
+addons:
+  sonarcloud:
+    organization: lheydel-github
+
 scripts:
   - npm run build
   # - npm run test
+  - sonar-scanner
 
 git:
   depth: 3
+  
