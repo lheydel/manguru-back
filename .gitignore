@@ -1,4 +1,8 @@
-.vscode
-node_modules
+# Build
 dist
+node_modules
+
+# Dev tools
 .scannerwork
+.vscode
+coverage

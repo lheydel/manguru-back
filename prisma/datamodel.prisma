@@ -1,0 +1,9 @@
+type User {
+  id: ID! @id
+  vs: Int!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+
+  email: String! @unique
+  name: String!
+}

@@ -1,14 +1,15 @@
-import { User } from './user.model';
 import { Singleton } from 'typescript-ioc';
+import { prisma } from '../../prisma/generated/prisma-client';
+import { User } from './user.model';
 
 @Singleton
 export class UserRepository {
 
-    private UserModel = new User().getModelForClass(User);
+    public async save(user: User): Promise<User> {
+        return await prisma.createUser(user);
+    }
 
-    public async save(user: User) {
-        const userDoc = new this.UserModel(user);
-        await userDoc.validate().catch(err => { throw err; });
-        await userDoc.save().catch(err => { throw err; });
+    public async getAll(): Promise<Array<User>> {
+        return await prisma.users();
     }
 }

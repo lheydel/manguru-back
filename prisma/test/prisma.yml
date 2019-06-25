@@ -1,0 +1,9 @@
+endpoint: http://localhost:4466/manguru/test
+datamodel: 
+  - ../datamodel.prisma
+  
+databaseType: document
+
+generate:
+  - generator: typescript-client
+    output: ../generated/prisma-client/

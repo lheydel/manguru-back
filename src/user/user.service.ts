@@ -9,11 +9,11 @@ export class UserService {
     @Inject
     private userRepository: UserRepository;
 
-    public blblbl(): string {
-        return 'Blblbl!';
+    public async createUser(user: User): Promise<User> {
+        return await this.userRepository.save(user);
     }
 
-    public async createUser(email: string, name: string) {
-        await this.userRepository.save(new User(email, name));
+    public async getAll(): Promise<Array<User>> {
+        return this.userRepository.getAll();
     }
 }
