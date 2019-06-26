@@ -21,9 +21,8 @@ script:
   # Build app
   - npm run build
 
-  # Run prisma
-  - cd prisma 
-  - docker-compose up -d
+  # Run and prepare prisma
+  - cd prisma && docker-compose up -d
   - sleep 5
   - npx prisma deploy
   
@@ -31,8 +30,7 @@ script:
   - npm run test
   
   # Stop prisma
-  - docker-compose down 
-  - cd ..
+  - docker-compose down && cd ..
 
   # Code analysis (Sonarqube)
   - sonar-scanner
@@ -43,12 +41,12 @@ git:
 notifications:
   email: false
 
-# Doscord Webhook
-after_success:
-  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
-  - chmod +x send.sh
-  - ./send.sh success $WEBHOOK_URL
-after_failure:
-  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
-  - chmod +x send.sh
-  - ./send.sh failure $WEBHOOK_URL
+# Discord Webhook
+# after_success:
+#   - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+#   - chmod +x send.sh
+#   - ./send.sh success $WEBHOOK_URL
+# after_failure:
+#   - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+#   - chmod +x send.sh
+#   - ./send.sh failure $WEBHOOK_URL
