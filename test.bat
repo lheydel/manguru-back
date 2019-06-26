@@ -1,5 +1,5 @@
 REM Script to launch npm test without using the wrong database
-REM (Thought to be use locally as a dev tool)
+REM (Thought to be use locally as a dev tool on Windows)
 cd prisma
 
 REM Start prisma docker if needed
