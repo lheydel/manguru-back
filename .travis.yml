@@ -32,7 +32,7 @@ script:
   - sonar-scanner
 
 git:
-  depth: 3
+  depth: false
   
 notifications:
   email: false
