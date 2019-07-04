@@ -7,7 +7,7 @@ import { User } from './user.model';
 export class UserService {
 
     @Inject
-    private userRepository: UserRepository;
+    private userRepository!: UserRepository;
 
     public async createUser(user: User): Promise<User> {
         return await this.userRepository.save(user);

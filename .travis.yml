@@ -35,6 +35,14 @@ script:
   # Code analysis (Sonarqube)
   - sonar-scanner
 
+deploy:
+  # Prod
+  - provider: script
+    script: bash ./deploy.sh prod
+    skip_cleanup: true 
+    on:
+      branch: master
+
 git:
   depth: false
   

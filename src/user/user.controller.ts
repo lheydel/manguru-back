@@ -7,7 +7,7 @@ import { User } from './user.model';
 export class UserController {
 
     @Inject
-    private userService: UserService;
+    private userService!: UserService;
 
     // test
     public getName(req: Request, res: Response) {
