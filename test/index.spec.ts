@@ -5,7 +5,7 @@ test('1 + 2 is 3', () => {
 });
 
 test('throw if null', () => {
-    expect(() => sum(null, null)).toThrow();
+    expect(() => sum(undefined, undefined)).toThrow();
 });
 
 // test async

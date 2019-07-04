@@ -19,12 +19,14 @@ test('should receive an error', async () => {
         throw new Error('Something weird happened');
     });
 
-    let error: Error;
-    try {
-        await userService.getAll();
-    } catch (err) {
-        error = err;
-    }
-    expect(error).toBeInstanceOf(Error);
-    expect(error.message).toBe('Something weird happened')
+    // let error: Error;
+    // try {
+    //     await userService.getAll();
+    // } catch (err) {
+    //     error = err;
+    // }
+    // expect(error).toBeInstanceOf(Error);
+    // expect(error.message).toBe('Something weird happened')
+
+    await expect(userService.getAll()).rejects.toThrow('Something weird happened');
 });
