@@ -1,13 +1,13 @@
 {
-  "name": "manguru",
+  "name": "manguru-back",
   "version": "0.0.1",
-  "description": "impossiburuuu",
   "repository": {
     "type": "git",
     "url": "https://github.com/lheydel/manguru-back.git"
   },
   "author": "Luc Heydel",
-  "license": "ISC",
+  "license": "MIT",
+  "private": true,
   "scripts": {
     "start": "npm run serve",
     "build": "npm run build-ts && npm run tslint",
