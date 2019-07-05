@@ -42,6 +42,18 @@ deploy:
     skip_cleanup: true 
     on:
       branch: master
+  # Test
+  - provider: script
+    script: bash ./deploy.sh test
+    skip_cleanup: true 
+    on:
+      branch: test
+  # Dev
+  - provider: script
+    script: bash ./deploy.sh dev
+    skip_cleanup: true 
+    on:
+      branch: dev
 
 git:
   depth: false
