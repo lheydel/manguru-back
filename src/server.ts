@@ -6,6 +6,7 @@ import { APP_PORT } from './config/app';
 import * as indexController from './index';
 import { UserController } from './user/user.controller';
 import bodyParser = require('body-parser');
+import { MigrationManager } from './migrations';
 
 
 const app = express();
@@ -32,6 +33,10 @@ app.get('/user/name', userController.getName.bind(userController));
 app.get('/user/create', userController.create.bind(userController));
 
 // start serv
-app.listen(APP_PORT, () => {
+app.listen(APP_PORT, async () => {
+    // entity migrations
+    const migrationManager = new MigrationManager();
+    await migrationManager.doMigrations();
+
     console.log('app started');
 });
