@@ -127,7 +127,7 @@ It is also possible to run your tests without deploying the app by adding the ar
 ```
 With this option, the script will start prisma with the docker-compose available in /prisma before the tests, and stop it afterwards.
 
-> **Note** - If you try to pass anything other than `-d`, the script will act as if it was called without any argument.
+> **Note** - If you try to pass anything other than the previous parameters, the script will act as if it was called without any argument.
 
 ## Code analysis
 To improve and maintain the global quality of the source code, this project uses a static code analysis tool named [Sonarqube](https://www.sonarqube.org/), which scan the project and detect code smells and security issues. It also get the test coverage stats from Jest.
