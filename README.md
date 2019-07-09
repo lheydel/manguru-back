@@ -70,7 +70,7 @@ This project connects to a document oriented database managed by [MongoDB](https
 
 Also, to facilitate the interaction with this database, [Prisma](https://www.prisma.io/) is used as a middleware between NodeJS and MongoDB. It provides a support for [GraphQL](https://graphql.org/) schemas and automatically build an API from those to interact with the data within the database, which is then accessed by NodeJS.
 
-> **Note** - When prisma is running on your machine, you can access the associated MongoDB instance on `http://localhost:27018`, with the credentials prisma/prisma.
+> **Note** - When prisma is running on your machine, you can access the associated MongoDB instance on `http://localhost:27018`.
 
 ## Tests
 The test runner used in this project is called [Jest](https://jestjs.io/). It manages unit, integration and end-to-end tests and works well with asynchroneous operations.
