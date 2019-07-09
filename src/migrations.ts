@@ -15,7 +15,7 @@ export class MigrationManager {
         const startTime = new Date();
 
         /* Migrations */
-        console.log('Starting entity migrations...');
+        console.log('---------------\nStarting entity migrations...');
 
         totalUpdated += await this._doMigration(this.userMigration, 'Users');
         // totalUpdated += await this._doMigration(this.userMigration, 'Users');
@@ -24,7 +24,7 @@ export class MigrationManager {
 
         /* End logs */
         this._dispLogs('Total', totalUpdated, startTime);
-        console.log(`Entity migrations done`);
+        console.log(`Entity migrations done\n---------------`);
     }
 
     /**

@@ -10,17 +10,20 @@ export class UserController {
     private userService!: UserService;
 
     // test
+    // /users/name
     public getName(req: Request, res: Response) {
         // res.send('Larry Golade\n' + this.userService.blblbl());
-        this.userService.getAll().then(users => {
-            // const user = new User(users[0]._doc.email, users[0]._doc.name);
-            res.send('getAll: ' + users);
-        }).catch(err => {
-            res.send('getAll failed: ' + err);
-        });
+        // this.userService.getAll().then(users => {
+        //     // const user = new User(users[0]._doc.email, users[0]._doc.name);
+        //     res.send('getAll: ' + users);
+        // }).catch(err => {
+        //     res.send('getAll failed: ' + err);
+        // });
+        res.send('Sandra Geffroi');
     }
 
     // test
+    // /users/create
     public create(req: Request, res: Response) {
         const user = new User('sandra.geffroi@gmail.com', 'Sandra Geffroi');
         this.userService.createUser(user)
