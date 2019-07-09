@@ -14,9 +14,10 @@ export class UserController {
         // res.send('Larry Golade\n' + this.userService.blblbl());
         this.userService.getAll().then(users => {
             // const user = new User(users[0]._doc.email, users[0]._doc.name);
-            res.send(users);
+            res.send('getAll: ' + users);
+        }).catch(err => {
+            res.send('getAll failed: ' + err);
         });
-        res.send('get All');
     }
 
     // test

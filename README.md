@@ -29,35 +29,7 @@ To build and run this app locally, you will need a few things:
 # Getting started
 > **Note** - To run the tests, please refer to the [associated](##tests) part.
 
-Please ensure that Docker is running on your computer before doing either of the following steps.
-
-## Running in near prod environment
- - Clone the repository
-```
-git clone --depth=1 https://github.com/lheydel/manguru-back.git manguru-back
-```
- - Install Prisma dependency
-```
-cd manguru-back
-npm install -g prisma
-```
- - Setup database
-```
-cd prisma
-docker-compose up -d
-prisma deploy
-cd ..
-```
- - Build and run the project
-```
-docker build . --tag=manguru-back
-docker run -d -p 8080:8080 manguru-back
-```
- - Stop the project
-```
-docker container ls
-docker container stop <container id>
-```
+Please ensure that Docker is running on your computer before doing anything.
  
 ## Running in dev mode
  - Clone the repository
@@ -73,12 +45,6 @@ npm install
 ```
 docker-compose up -d --build
 ```
- - Setup the database
-```
-cd prisma
-npx prisma deploy
-cd ..
-```
  - Stop the project
 ```
 docker-compose down
@@ -86,6 +52,8 @@ docker-compose down
 
 ---
 When the app is running, you can try making requests to `http://localhost:8080` with tools like [Postman](https://www.getpostman.com/), or directly using the [Frontend](https://github.com/lheydel/manguru-front) part of the app.
+
+You can also access your local database via http://localhost:29018 with tools like [Robo 3T](https://robomongo.org/download) for example.
 
 > **Note** - In dev mode, the app is refreshing itself each time a typescript source file is updated, so you don't need to go through those steps again and again.
 
@@ -107,11 +75,11 @@ Also, to facilitate the interaction with this database, [Prisma](https://www.pri
 ## Tests
 The test runner used in this project is called [Jest](https://jestjs.io/). It manages unit, integration and end-to-end tests and works well with asynchroneous operations.
 
-To prevent the tests from ruining the data in your local database, a second settings file is available in /prisma/test to deploy your prisma instance with. A script is provided to help you run the tests without having to think about it.
+To prevent the tests from ruining the data in your local database, a second setup is available in /prisma/test to deploy a second prisma instance. A script is provided to help you run the tests without having to think about it.
 
 > **Note** - This script is currently only available on Windows, but it will enventually be adapted for Linux environments if necessary.
 
-You can find the script at the root of the project under the name of `test.bat`. It deploys the prisma test instance, runs the tests, and then redeploy your dev instance so that you don't have to do anything beside running this whenever you want to run your tests.
+You can find the script at the root of the project under the name of `test.bat`. It deploys the prisma test instance, runs the tests and stops prisma.
 
 To run it, go to the root of the project and call :
 ```
@@ -121,13 +89,8 @@ You can run jest in watch mode by adding the argument `-w` :
 ```
 ./test.bat -w
 ```
-It is also possible to run your tests without deploying the app by adding the argument `-d` :
-```
-./test.bat -d
-```
-With this option, the script will start prisma with the docker-compose available in /prisma before the tests, and stop it afterwards.
 
-> **Note** - If you try to pass anything other than `-d`, the script will act as if it was called without any argument.
+> **Note** - If you try to pass anything other than the previous parameters, the script will just ignore it.
 
 ## Code analysis
 To improve and maintain the global quality of the source code, this project uses a static code analysis tool named [Sonarqube](https://www.sonarqube.org/), which scan the project and detect code smells and security issues. It also get the test coverage stats from Jest.

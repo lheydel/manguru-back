@@ -19,7 +19,7 @@ addons:
 
 script:
   # Run and prepare prisma
-  - cd prisma && docker-compose up -d
+  - cd prisma/test && docker-compose up -d
   - sleep 5
   - npx prisma deploy
 
@@ -30,7 +30,7 @@ script:
   - npm run test
   
   # Stop prisma
-  - docker-compose down && cd ..
+  - docker-compose down && cd ../..
 
   # Code analysis (Sonarqube)
   - sonar-scanner

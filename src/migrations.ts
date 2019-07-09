@@ -34,10 +34,15 @@ export class MigrationManager {
      * @param entity the name of the entity to display in the logs
      */
     private async _doMigration<T extends BaseEntity>(migrator: BaseMigrator<T>, entity: string): Promise<number> {
-        const startTime = new Date();
-        const nbUpdated = (await migrator.doMigrations()).length;
-        this._dispLogs(entity, nbUpdated, startTime);
-        return nbUpdated;
+        try {
+            const startTime = new Date();
+            const nbUpdated = (await migrator.doMigrations()).length;
+            this._dispLogs(entity, nbUpdated, startTime);
+            return nbUpdated;
+        } catch (err) {
+            console.log(`${entity}: migration failed --> ${err}`);
+            return 0;
+        }
     }
 
     /**

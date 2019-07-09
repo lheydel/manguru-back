@@ -15,6 +15,7 @@ export class UserService {
      * @returns the newly created user, including the auto-generated fields
      */
     public async createUser(user: User): Promise<User> {
+        // return await this.userRepository.save(user);
         return await this.userRepository.save(user);
     }
 
