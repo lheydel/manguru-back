@@ -1,4 +1,4 @@
-endpoint: http://localhost:4467/manguru/test
+endpoint: http://localhost:4466/manguru/test
 datamodel: 
   - ../datamodel.prisma
   

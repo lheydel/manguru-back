@@ -79,7 +79,7 @@ To prevent the tests from ruining the data in your local database, a second setu
 
 > **Note** - This script is currently only available on Windows, but it will enventually be adapted for Linux environments if necessary.
 
-You can find the script at the root of the project under the name of `test.bat`. It deploys the prisma test instance, runs the tests and stops prisma.
+You can find the script at the root of the project under the name of `test.bat`. It deploys the prisma test instance, runs the tests and stops prisma, then redeploy your dev instance so that you don't have to do anything beside running this whenever you want to run your tests.
 
 To run it, go to the root of the project and call :
 ```
@@ -89,6 +89,15 @@ You can run jest in watch mode by adding the argument `-w` :
 ```
 ./test.bat -w
 ```
+To rebuild the app before starting the tests, use `-b` :
+```
+./test.bat -b
+```
+It is also possible to run your tests without deploying the entire app by adding the argument `-d` :	
+```	
+./test.bat -d	
+```	
+With this option, the script will start prisma with the docker-compose available in /prisma before the tests, and stop it afterwards.
 
 > **Note** - If you try to pass anything other than the previous parameters, the script will just ignore it.
 
