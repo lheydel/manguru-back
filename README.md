@@ -133,7 +133,14 @@ First things first, if you want to update an entity in the database, you will ha
 There are roughly three case scenarios when updating an entity. You can either **add**, **remove** or **edit** one or more properties.
 
 #### Adding a new property
-To create a new property, there is no special action to do beside adding it to both the model and prisma datamodel with the exact same name. If the new property is required or depends on other data of the entity, please refer to [Data migrations](###data-migrations).
+To create a new property, there is no special action to do beside adding it to both the model and prisma datamodel with the exact same name. 
+
+If the new property is required, don't forget to set a default value on the datamodel so that prisma doesn't block the migration. Example:
+```Typescript
+username: String! @default(value: "Mangurian")
+```
+
+If the new property depends on other data of the entity, please refer to [Data migrations](###data-migrations).
 
 #### Removing a property
 Removing a property is a delicate operation, as it causes a loss of data, which can't be migrated afterwards to another location since they don't exist anymore. As such, removing a property is prohibited.

@@ -8,6 +8,7 @@ import { APP_PORT } from './config/app';
 import * as indexController from './index';
 import { UserController } from './user/user.controller';
 import { MigrationManager } from './migrations';
+import { Route } from './common/properties';
 
 
 const app = express();
@@ -31,8 +32,13 @@ app.get('/contact', indexController.getContact);
 
 // users
 const userController = new UserController();
-app.get('/user/name', userController.getName.bind(userController));
-app.get('/user/create', userController.create.bind(userController));
+app.route(Route.USER)
+   .post(userController.create);
+
+app.route(Route.USER + '/:id')
+   .get(userController.getById)
+   .put(userController.update)
+   .delete(userController.delete);
 
 // start serv
 app.listen(APP_PORT, async () => {

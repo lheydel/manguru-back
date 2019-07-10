@@ -5,6 +5,7 @@ type User {
   updatedAt: DateTime! @updatedAt
 
   email: String! @unique
+  password: String!
   username: String! 
   
   name: String @deprecated(reason: "2019/07/05 - vs2 - use [username] property instead")

@@ -15,7 +15,7 @@ describe('needMigrations', () => {
         ${undefined}                | ${false}
 
     `('needMigrations: [latest vs: ' + VersionStruct.USER + '] vs $vs needs migration: $expected', ({ vs, expected }) => {
-        const user = new User('', '');
+        const user = new User();
         user.vs = vs;
         const result = userMigrator.needMigration(user);
         expect(result).toEqual(expected);

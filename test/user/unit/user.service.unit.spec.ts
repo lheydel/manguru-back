@@ -5,7 +5,14 @@ import { UserRepository } from '../../../src/user/user.repository';
 const userService = new UserService();
 
 it('should fetch users', async () => {
-    const users = [new User('blblbl', 'yolo')];
+    const users: User[] = [
+        {
+            ...new User(),
+            email: 'blblbl',
+            username: 'wazaaaa',
+            password: 'pwd'
+        }
+    ];
     UserRepository.prototype.getAll = jest.fn().mockImplementationOnce(() => {
         return users;
     });

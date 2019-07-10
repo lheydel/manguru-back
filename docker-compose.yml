@@ -36,8 +36,8 @@ services:
   # MONGO + VOLUMES --> NOT ON WINDOWS
   mongo:
     image: mongo
-  #   volumes: 
-  #     - ./data:/data/db
+    # volumes: 
+    #   - ./data:/data/db
     ports:
       - "27018:27017"
     # environment:

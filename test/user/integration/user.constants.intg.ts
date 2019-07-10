@@ -4,7 +4,8 @@ import { VersionStruct } from '../../../src/common/properties';
 export const userLatest: User = {
     vs: VersionStruct.USER,
     email: 'user@latest.com',
-    username: 'SandraGeffroi'
+    username: 'SandraGeffroi',
+    password: 'bestpwdever'
 };
 
 export const userV1: User = {
