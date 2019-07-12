@@ -3,7 +3,6 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 
-import * as indexController from './index';
 import { UserController } from './user/user.controller';
 import { Route } from './common/properties';
 
@@ -21,11 +20,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({credentials: true, origin: true}));
 
 /* ====== ROUTES ====== */
-
-// home
-app.get('/', indexController.getHome);
-app.get('/about', indexController.getAbout);
-app.get('/contact', indexController.getContact);
 
 // users
 const userController = new UserController();
