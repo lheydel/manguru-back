@@ -1,7 +1,6 @@
 import { prisma } from '../../../prisma/generated/prisma-client';
-import { userV1, userLatest } from './user.constants.intg';
+import { userV1, userLatest } from '../user.constants.intg';
 import { UserMigrator } from '../../../src/user/user.migrations';
-import { User } from '../../../src/user/user.model';
 
 const userMigrator = new UserMigrator();
 

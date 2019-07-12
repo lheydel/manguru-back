@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { UserService } from './user.service';
 import { Inject, Singleton } from 'typescript-ioc';
 import { User } from './user.model';
-import { UserCreateReqDTO } from './dto/user.create.req.dto';
+import { UserCreateReqDTO } from './dto/user.create.req';
 import { UserDTO } from './dto/user.dto';
 
 @Singleton
@@ -51,8 +51,7 @@ export class UserController {
             });
 
         } catch (err) {
-            console.log(err);
-            // res.status(400).send(err);
+            console.error(err);
             res.status(400).send(err);
         }
 

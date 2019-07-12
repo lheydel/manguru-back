@@ -1,6 +1,6 @@
 import { UserMigrator } from '../../../src/user/user.migrations';
 import { VersionStruct } from '../../../src/common/properties';
-import { userLatest, userV1 } from './user.constants.unit';
+import { userLatest, userV1 } from '../user.constants.unit';
 import { User } from '../../../src/user/user.model';
 import { UserService } from '../../../src/user/user.service';
 
@@ -14,7 +14,7 @@ describe('needMigrations', () => {
         ${VersionStruct.USER + 1}   | ${false}
         ${undefined}                | ${false}
 
-    `('needMigrations: [latest vs: ' + VersionStruct.USER + '] vs $vs needs migration: $expected', ({ vs, expected }) => {
+    `('[latest vs: ' + VersionStruct.USER + '] vs $vs needs migration: $expected', ({ vs, expected }) => {
         const user = new User();
         user.vs = vs;
         const result = userMigrator.needMigration(user);
@@ -32,7 +32,7 @@ describe('updateVersionStruct', () => {
 
 test('doMigrations: migrate all versions to latest', async () => {
     const userList: User[] = [userV1, userLatest];
-    UserService.prototype.getAll = jest.fn().mockResolvedValue(userList);
+    UserService.prototype.getAllUsers = jest.fn().mockResolvedValue(userList);
     UserService.prototype.updateUserList = jest.fn();
 
     // do migrations

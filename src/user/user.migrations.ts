@@ -18,7 +18,7 @@ export class UserMigrator implements BaseMigrator<User> {
         // get all users
         // that need migrations
         // and upgrade them
-        const users = (await this.userService.getAll())
+        const users = (await this.userService.getAllUsers())
                       .filter(this.needMigration)
                       .map(this.upgradeVersionStruct.bind(this));
 

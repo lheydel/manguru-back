@@ -9,9 +9,9 @@ export class UserDTO extends BaseDTO {
 
     constructor(data: any) {
         super();
-        this.id = data.id;
-        this.email = data.email;
-        this.username = data.username;
+        this.id = data ? data.id : '';
+        this.email = data ? data.email : '';
+        this.username = data ? data.username : '';
     }
 
     /**
@@ -25,7 +25,12 @@ export class UserDTO extends BaseDTO {
         };
     }
 
-    public checkFields() {
+    public validateMe() {
+        this.checkFields();
+        this.throwIfError();
+    }
+
+    protected checkFields() {
         // check email
         if (!this.isValidString(this.email)) {
             this.addEmptyFieldError('email');
@@ -35,10 +40,5 @@ export class UserDTO extends BaseDTO {
         if (!this.isValidString(this.username)) {
             this.addEmptyFieldError('username');
         }
-    }
-
-    public validateMe() {
-        this.checkFields();
-        this.throwIfError();
     }
 }

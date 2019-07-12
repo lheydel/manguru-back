@@ -25,9 +25,9 @@ export class UserService {
      * @return the updated user
      */
     public async updateUser(id: string, user: User): Promise<User> {
-        if (id === '') {
+        if (id.trim().length === 0) {
             throw new Error('Update user: id cannot be empty');
-        }
+        } // else
 
         user.id = id;
         return await this.userRepository.update(user);
@@ -45,7 +45,7 @@ export class UserService {
      * Get all the known users
      * @return an array with all the users found
      */
-    public async getAll(): Promise<Array<User>> {
-        return await this.userRepository.getAll();
+    public async getAllUsers(): Promise<Array<User>> {
+        return await this.userRepository.all();
     }
 }

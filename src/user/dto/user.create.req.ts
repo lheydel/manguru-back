@@ -7,7 +7,7 @@ export class UserCreateReqDTO extends UserDTO {
 
     constructor(data: any) {
         super(data);
-        this.password = data.password;
+        this.password = data ? data.password : '';
     }
 
     /**
@@ -20,17 +20,17 @@ export class UserCreateReqDTO extends UserDTO {
         };
     }
 
-    public checkFields() {
+    public validateMe() {
+        this.checkFields();
+        this.throwIfError();
+    }
+
+    protected checkFields() {
         super.checkFields();
 
         // check password
         if (!this.isValidString(this.password)) {
             this.addEmptyFieldError('password');
         }
-    }
-
-    public validateMe() {
-        this.checkFields();
-        this.throwIfError();
     }
 }

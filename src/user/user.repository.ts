@@ -28,7 +28,7 @@ export class UserRepository {
             }
         });
 
-        return {...user, ...updatedUser};
+        return updatedUser;
     }
 
     /**
@@ -51,7 +51,7 @@ export class UserRepository {
      * Get all users in db
      * @return an array with all the users found
      */
-    public async getAll(): Promise<Array<User>> {
+    public async all(): Promise<Array<User>> {
         return await prisma.users();
     }
 }

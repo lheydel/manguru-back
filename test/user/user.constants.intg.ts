@@ -1,5 +1,5 @@
-import { User } from '../../../src/user/user.model';
-import { VersionStruct } from '../../../src/common/properties';
+import { User } from '../../src/user/user.model';
+import { VersionStruct } from '../../src/common/properties';
 
 export const userLatest: User = {
     vs: VersionStruct.USER,
@@ -15,3 +15,9 @@ export const userV1: User = {
     username: '',
     name: userLatest.username
 };
+
+export const userList: User[] = [
+    {...userLatest},
+    {...userLatest, email: userLatest.email + '_1'},
+    {...userLatest, email: userLatest.email + '_2'}
+];

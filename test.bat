@@ -30,7 +30,7 @@ if "%docker%" == "1" (
 )
 
 REM Target prisma test database
-call timeout /t 3 /nobreak > NUL
+call timeout /t 5 /nobreak > NUL
 call npx prisma deploy
 call npx prisma generate
 
