@@ -34,9 +34,9 @@ call timeout /t 5 /nobreak > NUL
 call npx prisma deploy
 call npx prisma generate
 
-REM Build the app
+REM Remove jest cache to use new version of the app
 if "%build%" == "1" (
-    call npm run build
+    call npx jest --clearCache
 )
 
 REM Do tests

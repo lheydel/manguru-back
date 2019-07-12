@@ -12,6 +12,10 @@ describe('validateMe', () => {
         expect(dto.validateMe.bind(dto)).not.toThrow();
     });
 
+    it('should be defined', () => {
+        expect(new UserCreateReqDTO(null)).toBeDefined();
+    });
+
     it('should throw an error with the empty fields', () => {
         const data = {
             email: '',
