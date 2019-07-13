@@ -1,5 +1,5 @@
 # Manguru Backend
-[![Build Status](https://travis-ci.org/lheydel/manguru-back.svg?branch=master)](https://travis-ci.org/lheydel/manguru-back) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=lheydel_manguru-back&metric=alert_status)](https://sonarcloud.io/dashboard?id=lheydel_manguru-back)  [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/lheydel/manguru-back/blob/master/LICENCE)
+[![Build Status](https://travis-ci.org/lheydel/manguru-back.svg?branch=master)](https://travis-ci.org/lheydel/manguru-back) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=lheydel_manguru-back&metric=alert_status)](https://sonarcloud.io/dashboard?id=lheydel_manguru-back)
 
 This repository handles the backend of the web platform [Manguru](TODO) ([Github](https://github.com/lheydel/manguru)).\
 It provides a RESTful API using NodeJS and Express.
