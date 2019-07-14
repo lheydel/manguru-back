@@ -13,16 +13,16 @@ services:
         databases:
           default:
             connector: mongo
-            uri: 'mongodb://prisma:prisma@mongo'
+            uri: 'mongodb://mongo:27017'
   mongo:
     image: mongo:3.6
     restart: always
     # Uncomment the next two lines to connect to your your database from outside the Docker environment, e.g. using a database GUI like Compass
     # ports:
     # - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: prisma
-      MONGO_INITDB_ROOT_PASSWORD: prisma
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: prisma
+    #   MONGO_INITDB_ROOT_PASSWORD: prisma
     ports:
       - "27018:27017"
     volumes:

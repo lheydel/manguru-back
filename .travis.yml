@@ -18,19 +18,19 @@ addons:
       secure: $SONAR_TOKEN
 
 script:
-  # Build app
-  - npm run build
-
   # Run and prepare prisma
-  - cd prisma && docker-compose up -d
+  - cd prisma/test && docker-compose up -d
   - sleep 5
   - npx prisma deploy
+
+  # Build app
+  - npm run build
   
   # Run tests
   - npm run test
   
   # Stop prisma
-  - docker-compose down && cd ..
+  - docker-compose down && cd ../..
 
   # Code analysis (Sonarqube)
   - sonar-scanner
@@ -42,6 +42,18 @@ deploy:
     skip_cleanup: true 
     on:
       branch: master
+  # Test
+  - provider: script
+    script: bash ./deploy.sh test
+    skip_cleanup: true 
+    on:
+      branch: test
+  # Dev
+  - provider: script
+    script: bash ./deploy.sh dev
+    skip_cleanup: true 
+    on:
+      branch: dev
 
 git:
   depth: false
