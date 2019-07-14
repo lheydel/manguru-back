@@ -4,10 +4,8 @@ export class BaseEntity {
     createdAt?: string;
     updatedAt?: string;
 
-    constructor(id?: string, vs: number = 0, createdAt?: string, updatedAt?: string) {
+    constructor(id?: string, vs = 1) {
         this.id = id;
         this.vs = vs;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 }

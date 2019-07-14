@@ -1,6 +1,7 @@
 # Build
 dist
 node_modules
+prisma/generated
 
 # Dev tools
 .scannerwork
