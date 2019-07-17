@@ -10,9 +10,9 @@ beforeEach(async () => {
 
 test('doMigrations: migrate all versions to latest', async () => {
     // insert an instance of all versions in db
-    const userList = [userV1];
+    const userList = [userV1()];
     userList.forEach(async user => await prisma.createUser(user));
-    const expectedUser = await prisma.createUser(userLatest);
+    const expectedUser = await prisma.createUser(userLatest());
 
     await prisma.users();
 
@@ -23,7 +23,8 @@ test('doMigrations: migrate all versions to latest', async () => {
     const result = await prisma.users();
     expect(result).toHaveLength(userList.length + 1);
     result.forEach(user => {
-        user.email = expectedUser.email;    // unique field
-        expect(user).toMatchObject(userLatest);
+        user.email = expectedUser.email;        // unique field
+        user.password = expectedUser.password;  // hashed in db
+        expect(user).toMatchObject(userLatest());
     });
 });

@@ -6,19 +6,23 @@ import { fakeId } from '../../test.utils';
 
 const userRepository = new UserRepository();
 
+afterAll(() => {
+    prisma.deleteManyUsers();
+});
+
 beforeEach(async () => {
     await prisma.deleteManyUsers();
 });
 
 describe('save', () => {
     it('should return the created user with a generated id', async () => {
-        const expectedUser = {...userLatest, id: expect.anything()};
-        await expect(userRepository.save(userLatest)).resolves.toMatchObject(expectedUser);
+        const expectedUser = {...userLatest(), id: expect.anything()};
+        await expect(userRepository.save(userLatest())).resolves.toMatchObject(expectedUser);
     });
 
     it('should throw an error when duplicating a user', async () => {
-        await prisma.createUser(userLatest);
-        await expect(userRepository.save(userLatest)).rejects.toThrow();
+        await prisma.createUser(userLatest());
+        await expect(userRepository.save(userLatest())).rejects.toThrow();
     });
 });
 
@@ -27,8 +31,8 @@ describe('update', () => {
     let updatedUser: User;
 
     beforeEach(async () => {
-        originUser = await prisma.createUser({...userV1});
-        updatedUser = {...userLatest, id: originUser.id};
+        originUser = await prisma.createUser(userV1());
+        updatedUser = {...userLatest(), id: originUser.id};
     });
 
     it('should return the updated user', async () => {
@@ -45,7 +49,7 @@ describe('all', () => {
     let originList: User[];
 
     beforeEach(async () => {
-        originList = await Promise.all(userList.map(async user => await prisma.createUser(user)));
+        originList = await Promise.all(userList().map(async user => await prisma.createUser(user)));
     });
 
     it('should fetch users', async () => {
@@ -58,6 +62,17 @@ describe('all', () => {
     });
 });
 
-afterAll(() => {
-    prisma.deleteManyUsers();
+describe('getByEmail', () => {
+
+    beforeEach(async () => {
+        await prisma.createUser(userLatest());
+    });
+
+    it('should fetch user', async () => {
+        await expect(userRepository.findByEmail(userLatest().email)).resolves.toMatchObject(userLatest());
+    });
+
+    it('should return null when no user found', async () => {
+        await expect(userRepository.findByEmail('')).resolves.toBeNull();
+    });
 });

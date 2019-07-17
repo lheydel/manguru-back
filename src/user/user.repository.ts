@@ -41,6 +41,7 @@ export class UserRepository {
             vs: user.vs,
             email: user.email,
             username: user.username,
+            password: user.password,
 
             // deprecated fields
             name: undefined
@@ -48,10 +49,29 @@ export class UserRepository {
     }
 
     /**
-     * Get all users in db
+     * Find all the users in db
      * @return an array with all the users found
      */
     public async all(): Promise<Array<User>> {
         return await prisma.users();
+    }
+
+    /**
+     * Find the user with the given id
+     * @param id the id of the user
+     * @return the user found if it exists,
+     *         null if it doesn't
+     */
+    public async findById(id: string): Promise<User | null> {
+        return await prisma.user({id: id});
+    }
+
+    /**
+     * Find the user with the given email
+     * @param email the email of the user if it exists,
+     *              null if it doesn't
+     */
+    public async findByEmail(email: string): Promise<User | null> {
+        return await prisma.user({email: email});
     }
 }

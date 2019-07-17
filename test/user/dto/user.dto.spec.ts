@@ -1,5 +1,9 @@
 import { UserDTO } from '../../../src/user/dto/user.dto';
 
+it('should be defined', () => {
+    expect(new UserDTO(null)).toBeDefined();
+});
+
 describe('validateMe', () => {
     it('should be ok', () => {
         const data = {
@@ -8,10 +12,6 @@ describe('validateMe', () => {
         };
         const dto = new UserDTO(data);
         expect(dto.validateMe.bind(dto)).not.toThrow();
-    });
-
-    it('should be defined', () => {
-        expect(new UserDTO(null)).toBeDefined();
     });
 
     it('should throw an error with the empty fields', () => {

@@ -24,14 +24,14 @@ describe('needMigrations', () => {
 
 describe('updateVersionStruct', () => {
     test('upgrade from vs 1 to latest', () => {
-        const user = {...userV1};
+        const user = userV1();
         userMigrator.upgradeVersionStruct(user);
-        expect(user).toEqual(userLatest);
+        expect(user).toEqual(userLatest());
     });
 });
 
 test('doMigrations: migrate all versions to latest', async () => {
-    const userList: User[] = [userV1, userLatest];
+    const userList: User[] = [userV1(), userLatest()];
     UserService.prototype.getAllUsers = jest.fn().mockResolvedValue(userList);
     UserService.prototype.updateUserList = jest.fn();
 
@@ -40,7 +40,7 @@ test('doMigrations: migrate all versions to latest', async () => {
 
     // check if migration was done for all the old versions
     userList.forEach(user => {
-        expect(user).toEqual(userLatest);
+        expect(user).toEqual(userLatest());
     });
 
     // check if migration was done only if necessary
