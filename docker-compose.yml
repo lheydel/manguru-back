@@ -10,6 +10,7 @@ services:
     # --> code inside running container will update whenever local files are updated
     volumes:
       - .:/src
+      - /src/node_modules
     ports:
       - "8080:8080"
       - "5858:5858"

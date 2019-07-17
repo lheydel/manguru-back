@@ -1,23 +1,14 @@
-import { UserDTO } from './user.dto';
-import { User } from '../user.model';
+import { BaseDTO } from '../../common/base.dto';
 
-export class UserCreateRequest extends UserDTO {
+export class UserLoginRequest extends BaseDTO {
 
+    email: string;
     password: string;
 
     constructor(data: any) {
-        super(data);
+        super();
+        this.email = data ? data.email : '';
         this.password = data ? data.password : '';
-    }
-
-    /**
-     * Transform the dto into an actual User
-     */
-    public toUser(): User {
-        return {
-            ...super.toUser(),
-            password: this.password
-        };
     }
 
     public validateMe() {
@@ -26,7 +17,10 @@ export class UserCreateRequest extends UserDTO {
     }
 
     protected checkFields() {
-        super.checkFields();
+        // check email
+        if (!this.isValidString(this.email)) {
+            this.addEmptyFieldError('email');
+        }
 
         // check password
         if (!this.isValidString(this.password)) {
