@@ -21,6 +21,6 @@ passport.use(new JWTStrategy(opts, async (payload, done) => {
     }
 }));
 
-export const jwtAuth =  passport.authenticate('jwt', {session: false});
+export const jwtAuth = passport.authenticate('jwt', {session: false});
 
 export default passport;
