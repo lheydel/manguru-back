@@ -6,6 +6,7 @@ import passport, { jwtAuth } from './config/passport';
 
 import { Route } from './common/properties';
 import { UserController } from './user/user.controller';
+import morgan = require('morgan');
 
 
 const app = express();
@@ -22,6 +23,9 @@ app.use(cors({credentials: true, origin: true}));
 
 // passport
 app.use(passport.initialize());
+
+// logs
+app.use(morgan('combined'));
 
 /* ====== ROUTES ====== */
 
