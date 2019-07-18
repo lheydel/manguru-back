@@ -1,10 +1,10 @@
-import compression from 'compression';
-import express from 'express';
 import bodyParser from 'body-parser';
+import compression from 'compression';
 import cors from 'cors';
-import passport, { jwtAuth } from './config/passport';
-
+import express from 'express';
 import { Route } from './common/properties';
+import passport, { jwtAuth } from './config/passport';
+import { UserDTO } from './user/dto/user.dto';
 import { UserController } from './user/user.controller';
 import morgan = require('morgan');
 
@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // CORS requests
-app.use(cors({credentials: true, origin: true}));
+app.use(cors({ credentials: true, origin: true }));
 
 // passport
 app.use(passport.initialize());
@@ -32,13 +32,14 @@ app.use(morgan('combined'));
 // users
 const userController = new UserController();
 app.route(Route.LOGIN)
-   .post(userController.login);
+    .get(jwtAuth, userController.loginJWT)
+    .post(userController.login);
 
 app.route(Route.USER)
-   .post(userController.register);
+    .post(userController.register);
 
 app.route(Route.USER + '/:id')
-   .put(jwtAuth, userController.update)
-   .delete(jwtAuth, userController.delete);
+    .put(jwtAuth, userController.update)
+    .delete(jwtAuth, userController.delete);
 
 export default app;

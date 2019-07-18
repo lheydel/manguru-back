@@ -1,5 +1,6 @@
 import passport from 'passport';
-import { Strategy as JWTStrategy, ExtractJwt, StrategyOptions } from 'passport-jwt';
+import { ExtractJwt, Strategy as JWTStrategy, StrategyOptions } from 'passport-jwt';
+import { User } from '../user/user.model';
 import { UserService } from '../user/user.service';
 
 const userService = new UserService();
@@ -21,6 +22,9 @@ passport.use(new JWTStrategy(opts, async (payload, done) => {
     }
 }));
 
-export const jwtAuth = passport.authenticate('jwt', {session: false});
+export const jwtAuth = passport.authenticate('jwt', { session: false });
+
+export const jwtAuthOnly = passport.authenticate('jwt', { session: false }, (err: Error, user: User) => {
+});
 
 export default passport;

@@ -15,10 +15,15 @@ export class UserController {
     private userService!: UserService;
 
     constructor() {
+        this.loginJWT = this.loginJWT.bind(this);
         this.login = this.login.bind(this);
         this.register = this.register.bind(this);
         this.update = this.update.bind(this);
         this.delete = this.delete.bind(this);
+    }
+
+    public loginJWT(req: Request, res: Response) {
+        res.status(200).json(new UserDTO(req.user));
     }
 
     /**
@@ -33,30 +38,30 @@ export class UserController {
 
             // check credentials
             this.userService.checkCredentials(dto.email, dto.password)
-            // no internal error
-            .then(user => {
-                if (!user) {
-                    // wrong credentials
-                    res.status(404).json('Username or password incorrect');
-                } else {
-                    // generate jwt
-                    jwt.sign({id: user.id!}, process.env.JWT_SECRET || 'DEFAULT', { expiresIn: 86400 }, (err, token) => {
-                        if (err) {
-                            // error while generating jwt
-                            console.error('[User login check failed]: ' + err.message);
-                            res.status(500).json(err.message);
-                        } else {
-                            // send user and jwt
-                            res.status(200).json(new UserLoginResponse(user, token));
-                        }
-                    });
-                }
-
-            // internal error
-            }).catch(err => {
-                console.error('[User login check failed]: ' + err.message);
-                res.status(500).json(err.message);
-            });
+                // no internal error
+                .then(user => {
+                    if (!user) {
+                        // wrong credentials
+                        res.status(404).json('Username or password incorrect');
+                    } else {
+                        // generate jwt
+                        jwt.sign({ id: user.id! }, process.env.JWT_SECRET || 'DEFAULT', {}, (err, token) => {
+                            if (err) {
+                                // error while generating jwt
+                                console.error('[User login check failed]: ' + err.message);
+                                res.status(500).json(err.message);
+                            } else {
+                                // send user and jwt
+                                res.status(200).json(new UserLoginResponse(user, token));
+                            }
+                        });
+                    }
+                })
+                // internal error
+                .catch(err => {
+                    console.error('[User login check failed]: ' + err.message);
+                    res.status(500).json(err.message);
+                });
 
         } catch (err) {
             // wrong request
@@ -77,18 +82,18 @@ export class UserController {
 
             // create user
             this.userService.createUser(dto.toUser())
-            // success
-            .then(newUser => {
-                const newDto = new UserDTO(newUser);
-                res.status(200).json(newDto);
+                // success
+                .then(newUser => {
+                    const newDto = new UserDTO(newUser);
+                    res.status(200).json(newDto);
 
-            // fail
-            }).catch(err => {
-                const msg = '[User creation failed]: ' + err.message;
-                console.error(msg);
-                const status = (err instanceof DuplicateError) ? 420 : 500;
-                res.status(status).json(msg);
-            });
+                    // fail
+                }).catch(err => {
+                    const msg = '[User creation failed]: ' + err.message;
+                    console.error(msg);
+                    const status = (err instanceof DuplicateError) ? 420 : 500;
+                    res.status(status).json(msg);
+                });
 
         } catch (err) {
             // wrong request
