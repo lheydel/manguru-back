@@ -5,6 +5,7 @@ export class User extends BaseEntity {
     email = '';
     password = '';
     username = '';
+    rememberMe = false;
 
     /** @deprecated 2019/07/05 - vs2 - use [username] property instead */
     name ?= '';

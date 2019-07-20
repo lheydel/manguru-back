@@ -20,15 +20,28 @@ export class UserRepository {
      * @return the updated user
      */
     public async update(user: User): Promise<User> {
-        const userInput = this._toUpdateInput(user);
-        const updatedUser = await prisma.updateUser({
-            data: userInput,
-            where: {
-                id: user.id
-            }
-        });
+        const userInput = this._toFullUpdateInput(user);
+        return this._doUpdate(user.id || '', userInput);
+    }
 
-        return updatedUser;
+    /**
+     * Update the password of a user in db
+     * @param id the id of the user to update
+     * @param password the new password
+     * @return the updated user
+     */
+    public async updatePassword(id: string, password: string): Promise<User> {
+        return this._doUpdate(id, { password });
+    }
+
+    /**
+     * Update the rememberMe field of a user in db
+     * @param id the id of the user to update
+     * @param remmberMe the new value
+     * @return the updated user
+     */
+    public async updateRememberMe(id: string, rememberMe: boolean): Promise<User> {
+        return this._doUpdate(id, { rememberMe });
     }
 
     /**
@@ -36,16 +49,32 @@ export class UserRepository {
      * @param user the user to format
      * @return the formatted user
      */
-    private _toUpdateInput(user: User): UserUpdateInput {
+    private _toFullUpdateInput(user: User): UserUpdateInput {
         return {
             vs: user.vs,
             email: user.email,
             username: user.username,
             password: user.password,
+            rememberMe: user.rememberMe,
 
             // deprecated fields
             name: undefined
         };
+    }
+
+    /**
+     * Do the actual update of a given user
+     * @param id the id of the user to update
+     * @param user the info to update on the user
+     * @return the updated user
+     */
+    private async _doUpdate(id: string, user: UserUpdateInput): Promise<User> {
+        return await prisma.updateUser({
+            data: user,
+            where: {
+                id: id
+            }
+        });
     }
 
     /**

@@ -6,7 +6,8 @@ export function userLatest(): User {
         vs: VersionStruct.USER,
         email: 'user@latest.com',
         username: 'SandraGeffroi',
-        password: 'bestpwdever'
+        password: 'bestpwdever',
+        rememberMe: false,
     };
 }
 

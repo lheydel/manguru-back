@@ -26,22 +26,42 @@ describe('save', () => {
     });
 });
 
-describe('update', () => {
+describe('updatePassword', () => {
+    const newPwd = 'newPwd';
     let originUser: User;
     let updatedUser: User;
 
     beforeEach(async () => {
-        originUser = await prisma.createUser(userV1());
-        updatedUser = {...userLatest(), id: originUser.id};
+        originUser = await prisma.createUser(userLatest());
+        updatedUser = {...userLatest(), id: originUser.id, password: newPwd};
     });
 
     it('should return the updated user', async () => {
-        await expect(userRepository.update(updatedUser)).resolves.toMatchObject(updatedUser);
+        await expect(userRepository.updatePassword(updatedUser.id || '', newPwd)).resolves.toMatchObject(updatedUser);
     });
 
     it('should throw an error when the id does not exist', async () => {
-        const fakeUser = {...updatedUser, id: fakeId(updatedUser.id || '')};
-        await expect(userRepository.update(fakeUser)).rejects.toThrow();
+        const fakedId = fakeId(updatedUser.id || '');
+        await expect(userRepository.updatePassword(fakedId, newPwd)).rejects.toThrow();
+    });
+});
+
+describe('updateRememberMe', () => {
+    let originUser: User;
+    let updatedUser: User;
+
+    beforeEach(async () => {
+        originUser = await prisma.createUser(userLatest());
+        updatedUser = {...userLatest(), id: originUser.id, rememberMe: true};
+    });
+
+    it('should return the updated user', async () => {
+        await expect(userRepository.updateRememberMe(updatedUser.id || '', true)).resolves.toMatchObject(updatedUser);
+    });
+
+    it('should throw an error when the id does not exist', async () => {
+        const fakedId = fakeId(updatedUser.id || '');
+        await expect(userRepository.updateRememberMe(fakedId, true)).rejects.toThrow();
     });
 });
 
