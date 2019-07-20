@@ -1,5 +1,6 @@
-import { UserDTO } from './user.dto';
+import { isValidString } from '../../common/utils';
 import { User } from '../user.model';
+import { UserDTO } from './user.dto';
 
 export class UserCreateRequest extends UserDTO {
 
@@ -29,7 +30,7 @@ export class UserCreateRequest extends UserDTO {
         super.checkFields();
 
         // check password
-        if (!this.isValidString(this.password)) {
+        if (!isValidString(this.password)) {
             this.addEmptyFieldError('password');
         }
     }

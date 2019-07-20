@@ -44,10 +44,9 @@ describe('updateUser', () => {
         originUser = await prisma.createUser(userV1());
     });
 
-    it('should return the updated user with a hashed password', async () => {
+    it('should return the updated user', async () => {
         const user = await userService.updateUser(originUser.id || '', userLatest());
         expect(user).toMatchObject(expectedUser);
-        expect(bcrypt.compareSync(userLatest().password, user.password)).toBe(true);
     });
 
     it('should throw an error when the id is empty', async () => {
@@ -57,6 +56,61 @@ describe('updateUser', () => {
     it('should throw an error if the id does not exist', async () => {
         const fakedId = fakeId(originUser.id || '');
         await expect(userService.updateUser(fakedId, userLatest())).rejects.toThrow();
+    });
+});
+
+describe('updatePassword', () => {
+    let originUser: User;
+    const expectedUser = {
+        ...userLatest(),
+        password: expect.anything(), // hashed in db
+    };
+    const newPwd = 'LookAtThatNewPwd';
+
+    beforeEach(async () => {
+        originUser = await prisma.createUser(userLatest());
+    });
+
+    it('should return the updated user with a hashed password', async () => {
+        const user = await userService.updatePassword(originUser.id || '', newPwd);
+        expect(user).toMatchObject(expectedUser);
+        expect(bcrypt.compareSync(newPwd, user.password)).toBe(true);
+    });
+
+    it('should throw an error when the id is empty', async () => {
+        await expect(userService.updatePassword('', newPwd)).rejects.toThrow();
+    });
+
+    it('should throw an error if the id does not exist', async () => {
+        const fakedId = fakeId(originUser.id || '');
+        await expect(userService.updatePassword(fakedId, newPwd)).rejects.toThrow();
+    });
+});
+
+describe('updateRememberMe', () => {
+    let originUser: User;
+    const expectedUser = {
+        ...userLatest(),
+        password: expect.anything(), // hashed in db
+        rememberMe: true,
+    };
+
+    beforeEach(async () => {
+        originUser = await prisma.createUser(userLatest());
+    });
+
+    it('should return the updated user', async () => {
+        const user = await userService.updateRememberMe(originUser.id || '', true);
+        expect(user).toMatchObject(expectedUser);
+    });
+
+    it('should throw an error when the id is empty', async () => {
+        await expect(userService.updateRememberMe('', true)).rejects.toThrow();
+    });
+
+    it('should throw an error if the id does not exist', async () => {
+        const fakedId = fakeId(originUser.id || '');
+        await expect(userService.updateRememberMe(fakedId, true)).rejects.toThrow();
     });
 });
 

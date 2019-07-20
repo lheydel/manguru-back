@@ -1,11 +1,12 @@
-import { Singleton, Inject } from 'typescript-ioc';
-import { UserRepository } from './user.repository';
-import { User } from './user.model';
 import bcrypt from 'bcrypt';
+import { Inject, Singleton } from 'typescript-ioc';
+import { BaseService } from '../common/base.service';
 import { DuplicateError } from '../common/errors/duplicate.error';
+import { User } from './user.model';
+import { UserRepository } from './user.repository';
 
 @Singleton
-export class UserService {
+export class UserService extends BaseService {
 
     @Inject
     private userRepository!: UserRepository;
@@ -16,10 +17,11 @@ export class UserService {
      * @returns the newly created user, including the auto-generated fields
      */
     public async createUser(user: User): Promise<User> {
-        // check password
-        if (!user.password || user.password.length === 0) {
-            throw new Error('Create user: password cannot be empty');
-        } // else
+        // check required fields
+        const op = 'Create user';
+        this.checkString(user.email, op, 'email');
+        this.checkString(user.username, op, 'username');
+        this.checkString(user.password, op, 'password');
 
         // check if duplicate
         const userFound = await this.userRepository.findByEmail(user.email);
@@ -38,18 +40,32 @@ export class UserService {
      * @return the updated user
      */
     public async updateUser(id: string, user: User): Promise<User> {
-        // check id
-        if (id.trim().length === 0) {
-            throw new Error('Update user: id cannot be empty');
-        } // else
+        this.checkString(id, 'Update user', 'id');
         user.id = id;
-
-        // if password changes, hash it
-        if (user.password != null && user.password.length > 0) {
-            user.password = await bcrypt.hash(user.password, 10);
-        }
-
         return await this.userRepository.update(user);
+    }
+
+    /**
+     * Update the password of a user in db
+     * @param id the id of the user to update
+     * @param password the new password
+     * @return the updated user
+     */
+    public async updatePassword(id: string, password: string): Promise<User> {
+        this.checkString(id, 'Update password', 'password');
+        password = await bcrypt.hash(password, 10);
+        return this.userRepository.updatePassword(id, password);
+    }
+
+    /**
+     * Update the rememberMe field of a user in db
+     * @param id the id of the user to update
+     * @param remmberMe the new value
+     * @return the updated user
+     */
+    public async updateRememberMe(id: string, rememberMe: boolean): Promise<User> {
+        this.checkString(id, 'Update rememberMe', 'rememberMe');
+        return this.userRepository.updateRememberMe(id, rememberMe);
     }
 
     /**

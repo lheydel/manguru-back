@@ -3,13 +3,6 @@ export class BaseDTO {
     private errors: string[] = [];
 
     /**
-     * Check that a string is not empty
-     */
-    protected isValidString(value?: string): boolean {
-        return value != null && value.trim().length > 0;
-    }
-
-    /**
      * Add an error to the list of the dto
      * @param field the field concerned by the error
      * @param message the associated error message

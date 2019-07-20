@@ -34,6 +34,39 @@ describe('update', () => {
     });
 });
 
+describe('updatePassword', () => {
+    const newPwd = 'newPwd';
+    const expectedUser = {...userLatest(), password: newPwd};
+    const mockOK = jest.fn().mockResolvedValue(expectedUser);
+    const mockThrow = jest.fn().mockRejectedValue(new Error('blblbl'));
+
+    it('should return the updated user', async () => {
+        prisma.updateUser = mockOK;
+        await expect(userRepository.updatePassword(expectedUser.id || '', newPwd)).resolves.toMatchObject(expectedUser);
+    });
+
+    it('should throw an error when prisma throws', async () => {
+        prisma.updateUser = mockThrow;
+        await expect(userRepository.updatePassword(expectedUser.id || '', newPwd)).rejects.toThrow('blblbl');
+    });
+});
+
+describe('updateRememberMe', () => {
+    const expectedUser = {...userLatest(), rememberMe: true};
+    const mockOK = jest.fn().mockResolvedValue(expectedUser);
+    const mockThrow = jest.fn().mockRejectedValue(new Error('blblbl'));
+
+    it('should return the updated user', async () => {
+        prisma.updateUser = mockOK;
+        await expect(userRepository.updateRememberMe(expectedUser.id || '', true)).resolves.toMatchObject(expectedUser);
+    });
+
+    it('should throw an error when prisma throws', async () => {
+        prisma.updateUser = mockThrow;
+        await expect(userRepository.updateRememberMe(expectedUser.id || '', true)).rejects.toThrow('blblbl');
+    });
+});
+
 describe('all', () => {
     const mockOK = jest.fn().mockResolvedValue(userList());
     const mockThrow = jest.fn().mockRejectedValue(new Error('blblbl'));

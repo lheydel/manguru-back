@@ -10,19 +10,19 @@
   "private": true,
   "scripts": {
     "start": "npm run serve",
-    "build": "npm run tslint && npm run build-ts",
+    "build": "npm run tslint && prisma generate && npm run build-ts",
     "build-ts": "tsc",
     "debug": "npm run prisma-deploy && npm run watch-debug",
-    "prisma-deploy": "cd prisma && prisma deploy && prisma generate && cd ..",
+    "prisma-deploy": "cd prisma && prisma deploy --force && prisma generate && cd ..",
     "serve": "node dist/src/server.js",
     "serve-debug": "nodemon --inspect=0.0.0.0:5858 dist/src/server.js",
-    "test": "jest --forceExit --detectOpenHandles --coverage --verbose",
+    "test": "jest --forceExit --detectOpenHandles --coverage",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "watch": "concurrently -k -p \"[{name}]\" -n \"Typescript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Typescript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\"",
     "watch-node": "nodemon dist/src/server.js",
     "watch-ts": "tsc -w",
-    "watch-test": "jest --forceExit --detectOpenHandles --coverage --verbose --watch"
+    "watch-test": "jest --forceExit --detectOpenHandles --coverage --watch"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",

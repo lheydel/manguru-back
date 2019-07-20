@@ -7,7 +7,8 @@ export function userLatest(): User {
         id: 'id',
         email: 'sandra@geffroi',
         username: 'SandraGeffroi',
-        password: 'bestpwdever'
+        password: 'bestpwdever',
+        rememberMe: true,
     };
 }
 

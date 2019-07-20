@@ -16,6 +16,23 @@ describe('createUser', () => {
         await expect(userService.createUser(userLatest())).resolves.toMatchObject(userLatest());
     });
 
+    it.each`
+        field
+        ${'email'}
+        ${'username'}
+        ${'password'}
+    `('should throw an error when no $field is given', async ({ field }: {field: 'email' | 'username' | 'password'}) => {
+        UserRepository.prototype.findByEmail = mockOK;
+        const newUser = userLatest();
+        newUser[field] = '';
+        await expect(userService.createUser(newUser)).rejects.toThrow();
+    });
+
+    it('should throw an error when user already exists', async () => {
+        UserRepository.prototype.findByEmail = mockOK;
+        await expect(userService.createUser(userLatest())).rejects.toThrow();
+    });
+
     it('should throw an error when user already exists', async () => {
         UserRepository.prototype.findByEmail = mockOK;
         await expect(userService.createUser(userLatest())).rejects.toThrow();
@@ -45,6 +62,49 @@ describe('updateUser', () => {
     it('should throw an error when repository throws', async () => {
         UserRepository.prototype.update = mockThrow;
         await expect(userService.updateUser('id', userLatest())).rejects.toThrow('blblbl');
+    });
+});
+
+describe('updatePassword', () => {
+    const newPwd = 'CheckOutThisNewPwd';
+    const expectedUser = {...userLatest(), password: newPwd};
+    const mockOK = jest.fn().mockResolvedValue(expectedUser);
+    const mockThrow = jest.fn().mockRejectedValue(new Error('blblbl'));
+
+    it('should return the updated user', async () => {
+        UserRepository.prototype.updatePassword = mockOK;
+        await expect(userService.updatePassword('id', newPwd)).resolves.toMatchObject(expectedUser);
+    });
+
+    it('should throw an error when the id is empty', async () => {
+        UserRepository.prototype.updatePassword = mockOK;
+        await expect(userService.updatePassword('', newPwd)).rejects.toThrow();
+    });
+
+    it('should throw an error when repository throws', async () => {
+        UserRepository.prototype.updatePassword = mockThrow;
+        await expect(userService.updatePassword('id', newPwd)).rejects.toThrow('blblbl');
+    });
+});
+
+describe('updateRememberMe', () => {
+    const expectedUser = {...userLatest(), rememberMe: true};
+    const mockOK = jest.fn().mockResolvedValue(expectedUser);
+    const mockThrow = jest.fn().mockRejectedValue(new Error('blblbl'));
+
+    it('should return the updated user', async () => {
+        UserRepository.prototype.updateRememberMe = mockOK;
+        await expect(userService.updateRememberMe('id', true)).resolves.toMatchObject(expectedUser);
+    });
+
+    it('should throw an error when the id is empty', async () => {
+        UserRepository.prototype.updateRememberMe = mockOK;
+        await expect(userService.updateRememberMe('', true)).rejects.toThrow();
+    });
+
+    it('should throw an error when repository throws', async () => {
+        UserRepository.prototype.updateRememberMe = mockThrow;
+        await expect(userService.updateRememberMe('id', true)).rejects.toThrow('blblbl');
     });
 });
 

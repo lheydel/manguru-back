@@ -4,9 +4,10 @@ type User {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 
-  email: String! @unique
-  password: String!
-  username: String! 
+  email: String @unique
+  password: String
+  username: String 
+  rememberMe: Boolean
   
   name: String @deprecated(reason: "2019/07/05 - vs2 - use [username] property instead")
 }

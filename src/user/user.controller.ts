@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { UserService } from './user.service';
+import jwt from 'jsonwebtoken';
 import { Inject, Singleton } from 'typescript-ioc';
+import { DuplicateError } from '../common/errors/duplicate.error';
 import { UserCreateRequest } from './dto/user.create.req';
 import { UserDTO } from './dto/user.dto';
-import { DuplicateError } from '../common/errors/duplicate.error';
 import { UserLoginRequest } from './dto/user.login.req';
-import jwt from 'jsonwebtoken';
-import { UserLoginResponse } from './dto/user.login.res';
+import { UserService } from './user.service';
+import { User } from './user.model';
 
 @Singleton
 export class UserController {
@@ -22,8 +22,20 @@ export class UserController {
         this.delete = this.delete.bind(this);
     }
 
+    /**
+     * GET /login
+     * Return a user after a jwt only authentication
+     */
     public loginJWT(req: Request, res: Response) {
-        res.status(200).json(new UserDTO(req.user));
+        this._setJwtCookie(res, req.user, req.user.rememberMe)
+            .then(resp => {
+                resp.status(200)
+                    .json(new UserDTO(req.user));
+
+            }).catch(err => {
+                console.error('[User login JWT check failed]: ' + err.message);
+                res.status(500).json(err.message);
+            });
     }
 
     /**
@@ -39,22 +51,23 @@ export class UserController {
             // check credentials
             this.userService.checkCredentials(dto.email, dto.password)
                 // no internal error
-                .then(user => {
+                .then(async user => {
                     if (!user) {
                         // wrong credentials
                         res.status(404).json('Username or password incorrect');
                     } else {
-                        // generate jwt
-                        jwt.sign({ id: user.id! }, process.env.JWT_SECRET || 'DEFAULT', {}, (err, token) => {
-                            if (err) {
-                                // error while generating jwt
-                                console.error('[User login check failed]: ' + err.message);
-                                res.status(500).json(err.message);
-                            } else {
-                                // send user and jwt
-                                res.status(200).json(new UserLoginResponse(user, token));
-                            }
-                        });
+                        try {
+                            // set rememberMe
+                            await this.userService.updateRememberMe(user.id || '', dto.rememberMe);
+
+                            // send jwt cookie and user
+                            res = await this._setJwtCookie(res, user, dto.rememberMe);
+                            res.status(200)
+                                .json(new UserDTO(user));
+                        } catch (err) {
+                            console.error('[User login check failed]: ' + err.message);
+                            res.status(500).json(err.message);
+                        }
                     }
                 })
                 // internal error
@@ -65,9 +78,20 @@ export class UserController {
 
         } catch (err) {
             // wrong request
-            console.error(err);
+            console.error(err.message);
             res.status(400).json(err.message);
         }
+    }
+
+    private async _setJwtCookie(res: Response, user: User, rememberMe: boolean): Promise<Response> {
+        // generate token
+        const token = await jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'DEFAULT');
+
+        // remember for 30 days
+        const maxAge = rememberMe ? { maxAge: 30 * 24 * 60 * 60 * 1000 } : {};
+
+        // set jwt cookie
+        return res.cookie('Authorization', token, maxAge);
     }
 
     /**
@@ -97,7 +121,7 @@ export class UserController {
 
         } catch (err) {
             // wrong request
-            console.error(err);
+            console.error(err.message);
             res.status(400).json(err.message);
         }
     }
