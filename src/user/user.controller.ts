@@ -85,7 +85,7 @@ export class UserController {
 
     private async _setJwtCookie(res: Response, user: User, rememberMe: boolean): Promise<Response> {
         // generate token
-        const token = await jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'DEFAULT');
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'DEFAULT');
 
         // remember for 30 days
         const maxAge = rememberMe ? { maxAge: 30 * 24 * 60 * 60 * 1000 } : {};
