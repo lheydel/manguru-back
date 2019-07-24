@@ -1,75 +1,76 @@
-import { prisma } from '../../../prisma/generated/prisma-client/index';
-import { userLatest, userV1, userList } from '../user.constants.intg';
-import { UserRepository } from '../../../src/user/user.repository';
+import { EntityRepository } from 'mikro-orm';
+import mikro, { mikroInit } from '../../../src/config/mikro';
 import { User } from '../../../src/user/user.model';
+import { UserRepository } from '../../../src/user/user.repository';
 import { fakeId } from '../../test.utils';
+import { userLatest, userList, userV1 } from '../user.constants.intg';
+import { ObjectID } from 'bson';
 
-const userRepository = new UserRepository();
+let userDb: EntityRepository<User>;
+let userRepository: UserRepository;
 
-afterAll(() => {
-    prisma.deleteManyUsers();
+beforeAll(async () => {
+    await mikroInit();
+    userRepository = new UserRepository();
+    userDb = mikro.getRepository(User);
 });
 
 beforeEach(async () => {
-    await prisma.deleteManyUsers();
+    await userDb.remove({}, true);
+});
+
+afterAll(async () => {
+    await userDb.remove({}, true);
 });
 
 describe('save', () => {
+    let user = userLatest();
+
     it('should return the created user with a generated id', async () => {
-        const expectedUser = {...userLatest(), id: expect.anything()};
-        await expect(userRepository.save(userLatest())).resolves.toMatchObject(expectedUser);
+        const expectedUser = {...user, _id: expect.anything(), updatedAt: expect.anything()};
+        await expect(userRepository.save(user)).resolves.toMatchObject(expectedUser);
+        await expect(userDb.findOne({ id: user._id })).resolves.toMatchObject(expectedUser);
     });
 
     it('should throw an error when duplicating a user', async () => {
-        await prisma.createUser(userLatest());
-        await expect(userRepository.save(userLatest())).rejects.toThrow();
+        user = userDb.create(userLatest());
+        await userDb.persistAndFlush(user);
+        await expect(userRepository.save(user)).rejects.toThrow();
     });
 });
 
-describe('updatePassword', () => {
-    const newPwd = 'newPwd';
+describe('update', () => {
     let originUser: User;
-    let updatedUser: User;
+    let expectedUser: User;
 
     beforeEach(async () => {
-        originUser = await prisma.createUser(userLatest());
-        updatedUser = {...userLatest(), id: originUser.id, password: newPwd};
+        originUser = userV1();
+        await userDb.persistAndFlush(originUser);
+        expectedUser = {
+            ...originUser,
+            ...userLatest(),
+            _id: expect.anything(),
+            createdAt: expect.anything(),
+            updatedAt: expect.anything(),
+        };
     });
 
     it('should return the updated user', async () => {
-        await expect(userRepository.updatePassword(updatedUser.id || '', newPwd)).resolves.toMatchObject(updatedUser);
+        await expect(userRepository.update(originUser.id, userLatest())).resolves.toMatchObject(expectedUser);
+        await expect(userDb.findOne({ id: originUser._id })).resolves.toMatchObject(expectedUser);
     });
 
     it('should throw an error when the id does not exist', async () => {
-        const fakedId = fakeId(updatedUser.id || '');
-        await expect(userRepository.updatePassword(fakedId, newPwd)).rejects.toThrow();
-    });
-});
-
-describe('updateRememberMe', () => {
-    let originUser: User;
-    let updatedUser: User;
-
-    beforeEach(async () => {
-        originUser = await prisma.createUser(userLatest());
-        updatedUser = {...userLatest(), id: originUser.id, rememberMe: true};
-    });
-
-    it('should return the updated user', async () => {
-        await expect(userRepository.updateRememberMe(updatedUser.id || '', true)).resolves.toMatchObject(updatedUser);
-    });
-
-    it('should throw an error when the id does not exist', async () => {
-        const fakedId = fakeId(updatedUser.id || '');
-        await expect(userRepository.updateRememberMe(fakedId, true)).rejects.toThrow();
+        const fakedId = fakeId(originUser.id);
+        await expect(userRepository.update(fakedId, userLatest())).rejects.toThrow();
     });
 });
 
 describe('all', () => {
-    let originList: User[];
+    const originList = userList();
 
     beforeEach(async () => {
-        originList = await Promise.all(userList().map(async user => await prisma.createUser(user)));
+        await Promise.all(originList.map(async user => await userDb.persistAndFlush(user)));
     });
 
     it('should fetch users', async () => {
@@ -77,19 +78,20 @@ describe('all', () => {
     });
 
     it('should fetch an empty list when no user found', async () => {
-        await prisma.deleteManyUsers();
+        await userDb.remove({}, true);
         await expect(userRepository.all()).resolves.toEqual([]);
     });
 });
 
 describe('getByEmail', () => {
+    const user = userLatest();
 
     beforeEach(async () => {
-        await prisma.createUser(userLatest());
+        await userDb.persistAndFlush(user);
     });
 
     it('should fetch user', async () => {
-        await expect(userRepository.findByEmail(userLatest().email)).resolves.toMatchObject(userLatest());
+        await expect(userRepository.findByEmail(user.email)).resolves.toMatchObject(user);
     });
 
     it('should return null when no user found', async () => {

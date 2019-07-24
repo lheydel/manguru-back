@@ -1,18 +1,27 @@
 import bcrypt from 'bcrypt';
-import { prisma } from '../../../prisma/generated/prisma-client';
+import { EntityRepository } from 'mikro-orm';
 import { Route } from '../../../src/common/properties';
-import { UserCreateRequest } from '../../../src/user/dto/user.create.req';
+import mikro, { mikroInit } from '../../../src/config/mikro';
+import { UserCreateRequest } from '../../../src/user/dto/user-create.req';
+import { UserLoginRequest } from '../../../src/user/dto/user-login.req';
 import { UserDTO } from '../../../src/user/dto/user.dto';
-import { UserLoginRequest } from '../../../src/user/dto/user.login.req';
+import { User } from '../../../src/user/user.model';
 import { fakeGet, fakePost } from '../../test.utils';
 import { userLatest } from '../user.constants.intg';
 
+let userDb: EntityRepository<User>;
+
+beforeAll(async () => {
+    await mikroInit();
+    userDb = mikro.getRepository(User);
+});
+
 beforeEach(async () => {
-    await prisma.deleteManyUsers();
+    await userDb.remove({}, true);
 });
 
 afterAll(async () => {
-    await prisma.deleteManyUsers();
+    await userDb.remove({}, true);
 });
 
 describe('loginJwt', () => {
@@ -20,13 +29,13 @@ describe('loginJwt', () => {
     const rawPwd = user.password;
     user.password = bcrypt.hashSync(rawPwd, 2);
 
-    it.only('should return the user logged', async () => {
+    it('should return the user logged', async () => {
         // create user and get jwt
-        const newUser = await prisma.createUser(user);
-        const res = (await fakePost(Route.LOGIN, new UserLoginRequest({...newUser, password: rawPwd})));
+        await userDb.persistAndFlush(user);
+        const res = (await fakePost(Route.LOGIN, new UserLoginRequest({...user, password: rawPwd})));
 
         const response = await fakeGet(Route.LOGIN, res.header['set-cookie']).expect(200);
-        expect(response.body).toMatchObject(new UserDTO(newUser));
+        expect(response.body).toMatchObject(new UserDTO(user));
     });
 
     it('should return a code 401 when jwt is not valid', async () => {
@@ -39,10 +48,10 @@ describe('login', () => {
     user.password = bcrypt.hashSync(user.password, 2);
 
     it('should return the user logged', async () => {
-        const newUser = await prisma.createUser(user);
+        await userDb.persistAndFlush(user);
 
         const response = await fakePost(Route.LOGIN, new UserLoginRequest(userLatest())).expect(200);
-        expect(response.body).toMatchObject(new UserDTO(newUser));
+        expect(response.body).toMatchObject(new UserDTO(user));
     });
 
     it('should return a code 404 if credentials are not valid', async () => {
@@ -68,7 +77,7 @@ describe('register', () => {
     });
 
     it('should return a code 420 if duplicate user', async () => {
-        await prisma.createUser(userLatest());
+        await userDb.persistAndFlush(userLatest());
         await fakePost(Route.USER, userReq).expect(420);
     });
 });

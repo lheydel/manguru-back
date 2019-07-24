@@ -1,21 +1,26 @@
 import jwt from 'jsonwebtoken';
 import { Route } from '../../../src/common/properties';
-import { UserCreateRequest } from '../../../src/user/dto/user.create.req';
+import { UserCreateRequest } from '../../../src/user/dto/user-create.req';
 import { UserDTO } from '../../../src/user/dto/user.dto';
-import { UserLoginRequest } from '../../../src/user/dto/user.login.req';
+import { UserLoginRequest } from '../../../src/user/dto/user-login.req';
 import { UserController } from '../../../src/user/user.controller';
 import { UserService } from '../../../src/user/user.service';
 import { fakePost } from '../../test.utils';
 import { userLatest } from '../user.constants.unit';
+import { mikroInit } from '../../../src/config/mikro';
+
+beforeAll(async () => {
+    await mikroInit();
+});
+
+const expectedUser = {...userLatest(), id: 'id'};
+const mockThrow = jest.fn().mockImplementation(() => { throw new Error('sync'); });
+const mockAsyncOk = jest.fn().mockResolvedValue(expectedUser);
+const mockAsyncThrow = jest.fn().mockRejectedValue(new Error('async'));
 
 it('should be defined', () => {
     expect(new UserController()).toBeDefined();
 });
-
-const mockThrow = jest.fn().mockImplementation(() => { throw new Error('sync'); });
-const mockAsyncOk = jest.fn().mockResolvedValue(userLatest());
-const mockAsyncThrow = jest.fn().mockRejectedValue(new Error('async'));
-
 
 describe('login', () => {
     const mockLoginErr = jest.fn().mockResolvedValue(null);
@@ -32,7 +37,7 @@ describe('login', () => {
         jwt.sign = mockJwtOk;
 
         const response = await fakePost(Route.LOGIN, loginReq).expect(200);
-        expect(response.body).toMatchObject(new UserDTO(userLatest()));
+        expect(response.body).toMatchObject(new UserDTO(expectedUser));
     });
 
     it('should return a code 404 if credentials are not valid', async () => {
@@ -75,7 +80,7 @@ describe('register', () => {
         UserCreateRequest.prototype.validateMe = jest.fn();
 
         const response = await fakePost(Route.USER, userReq).expect(200);
-        expect(response.body).toMatchObject(new UserDTO(userReq));
+        expect(response.body).toMatchObject(new UserDTO(expectedUser));
     });
 
     it('should return a code 400 if dto is not valid', async () => {

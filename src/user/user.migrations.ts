@@ -62,7 +62,6 @@ export class UserMigrator implements BaseMigrator<User> {
      */
     private _fromVs1To2(user: User) {
         user.username = user.name || '';
-        user.name = undefined;
         user.vs = 2;
     }
 }

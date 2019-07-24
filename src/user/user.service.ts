@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import { Inject, Singleton } from 'typescript-ioc';
 import { BaseService } from '../common/base.service';
-import { DuplicateError } from '../common/errors/duplicate.error';
 import { User } from './user.model';
 import { UserRepository } from './user.repository';
+import { ObjectID } from 'bson';
 
 @Singleton
 export class UserService extends BaseService {
@@ -23,12 +23,7 @@ export class UserService extends BaseService {
         this.checkString(user.username, op, 'username');
         this.checkString(user.password, op, 'password');
 
-        // check if duplicate
-        const userFound = await this.userRepository.findByEmail(user.email);
-        if (userFound) {
-            throw new DuplicateError('User already exists');
-        } // else
-
+        // hash password and save user
         user.password = await bcrypt.hash(user.password, 10);
         return await this.userRepository.save(user);
     }
@@ -41,8 +36,7 @@ export class UserService extends BaseService {
      */
     public async updateUser(id: string, user: User): Promise<User> {
         this.checkString(id, 'Update user', 'id');
-        user.id = id;
-        return await this.userRepository.update(user);
+        return await this.userRepository.update(id, user);
     }
 
     /**
@@ -52,9 +46,9 @@ export class UserService extends BaseService {
      * @return the updated user
      */
     public async updatePassword(id: string, password: string): Promise<User> {
-        this.checkString(id, 'Update password', 'password');
+        this.checkString(id, 'Update password', 'id');
         password = await bcrypt.hash(password, 10);
-        return this.userRepository.updatePassword(id, password);
+        return this.userRepository.update(id, { password });
     }
 
     /**
@@ -64,8 +58,8 @@ export class UserService extends BaseService {
      * @return the updated user
      */
     public async updateRememberMe(id: string, rememberMe: boolean): Promise<User> {
-        this.checkString(id, 'Update rememberMe', 'rememberMe');
-        return this.userRepository.updateRememberMe(id, rememberMe);
+        this.checkString(id, 'Update rememberMe', 'id');
+        return this.userRepository.update(id, { rememberMe });
     }
 
     /**
@@ -73,7 +67,7 @@ export class UserService extends BaseService {
      * @param users the users to update. Each user must have a valid id
      */
     public async updateUserList(users: User[]) {
-        return await Promise.all(users.map(async user => await this.updateUser(user.id || '', user)));
+        return await Promise.all(users.map(async user => await this.updateUser(user.id, user)));
     }
 
     /**

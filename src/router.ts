@@ -2,16 +2,19 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
+import { RequestContext } from 'mikro-orm';
+import morgan from 'morgan';
 import { Route } from './common/properties';
+import mikro from './config/mikro';
 import passport, { jwtAuth } from './config/passport';
-import { UserDTO } from './user/dto/user.dto';
 import { UserController } from './user/user.controller';
-import morgan = require('morgan');
-
 
 const app = express();
 
 /* ====== CONFIG ====== */
+
+// mikro orm
+app.use((_req, _res, next) => RequestContext.create(mikro.orm.em, next));
 
 // express
 app.use(compression());

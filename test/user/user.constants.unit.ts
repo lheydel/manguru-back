@@ -3,8 +3,8 @@ import { VersionStruct } from '../../src/common/properties';
 
 export function userLatest(): User {
     return {
+        ...new User(),
         vs: VersionStruct.USER,
-        id: 'id',
         email: 'sandra@geffroi',
         username: 'SandraGeffroi',
         password: 'bestpwdever',

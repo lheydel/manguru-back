@@ -1,4 +1,4 @@
-import { UserCreateRequest } from '../../../src/user/dto/user.create.req';
+import { UserCreateRequest } from '../../../src/user/dto/user-create.req';
 
 it('should be defined', () => {
     expect(new UserCreateRequest(null)).toBeDefined();
