@@ -1,5 +1,16 @@
+import { EntityManager, MikroORM } from 'mikro-orm';
 import request from 'supertest';
+import { mikroOpt } from '../src/config/mikro';
 import app from '../src/router';
+
+/**
+ * Init mikro-orm for a test suite
+ */
+export async function mikroInitTest(): Promise<EntityManager> {
+    const orm = await MikroORM.init({...mikroOpt, clientUrl: 'mongodb://localhost:27017'});
+    console.log('==========' + orm.getMetadata());
+    return orm.em;
+}
 
 /**
  * Generate a fake id from a real one as a base (to make sure it's a valid one)

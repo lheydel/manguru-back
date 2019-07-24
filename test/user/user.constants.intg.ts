@@ -1,30 +1,32 @@
 import { User } from '../../src/user/user.model';
 import { VersionStruct } from '../../src/common/properties';
 
+// tslint:disable: deprecation
+
 export function userLatest(): User {
-    return {
-        vs: VersionStruct.USER,
-        email: 'user@latest.com',
-        username: 'SandraGeffroi',
-        password: 'bestpwdever',
-        rememberMe: false,
-    };
+    const user = new User();
+    user.vs = VersionStruct.USER;
+    user.email = 'user@latest.com';
+    user.username = 'SandraGeffroi';
+    user.password = 'bestpwdever';
+    user.rememberMe = true;
+    return user;
 }
 
 export function userV1(): User {
-    return {
-        ...userLatest(),
-        vs: 1,
-        email: 'user@v1.com',
-        username: '',
-        name: userLatest().username
-    };
+    const user = userLatest();
+    user.vs = 1;
+    user.email = 'user@v1.com';
+    user.name = user.username;
+    user.username = '';
+    return user;
 }
 
 export function userList(): User[] {
-    return [
-        {...userLatest()},
-        {...userLatest(), email: userLatest().email + '_1'},
-        {...userLatest(), email: userLatest().email + '_2'}
-    ];
+    const list = new Array(3).fill(null).map((_val, i) => {
+        const user = userLatest();
+        user.email += '_' + i;
+        return user;
+    });
+    return list;
 }

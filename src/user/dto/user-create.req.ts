@@ -15,10 +15,9 @@ export class UserCreateRequest extends UserDTO {
      * Transform the dto into an actual User
      */
     public toUser(): User {
-        return {
-            ...super.toUser(),
-            password: this.password
-        };
+        const user = super.toUser();
+        user.password = this.password;
+        return user;
     }
 
     public validateMe() {

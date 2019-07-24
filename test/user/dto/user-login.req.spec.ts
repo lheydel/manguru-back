@@ -1,4 +1,4 @@
-import { UserLoginRequest } from '../../../src/user/dto/user.login.req';
+import { UserLoginRequest } from '../../../src/user/dto/user-login.req';
 
 it('should be defined', () => {
     expect(new UserLoginRequest(null)).toBeDefined();

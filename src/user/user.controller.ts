@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { Inject, Singleton } from 'typescript-ioc';
 import { DuplicateError } from '../common/errors/duplicate.error';
-import { UserCreateRequest } from './dto/user.create.req';
+import { UserCreateRequest } from './dto/user-create.req';
 import { UserDTO } from './dto/user.dto';
-import { UserLoginRequest } from './dto/user.login.req';
+import { UserLoginRequest } from './dto/user-login.req';
 import { UserService } from './user.service';
 import { User } from './user.model';
 
@@ -113,7 +113,7 @@ export class UserController {
 
                     // fail
                 }).catch(err => {
-                    const msg = '[User creation failed]: ' + err.message;
+                    const msg = '[User creation failed]: ' + err;
                     console.error(msg);
                     const status = (err instanceof DuplicateError) ? 420 : 500;
                     res.status(status).json(msg);

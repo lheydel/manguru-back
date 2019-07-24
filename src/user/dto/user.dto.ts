@@ -19,11 +19,10 @@ export class UserDTO extends BaseDTO {
      * Transform the dto into an actual User
      */
     public toUser(): User {
-        return {
-            ...new User(this.id),
-            email: this.email,
-            username: this.username
-        };
+        const user = new User(this.id);
+        user.email = this.email;
+        user.username = this.username;
+        return user;
     }
 
     public validateMe() {
