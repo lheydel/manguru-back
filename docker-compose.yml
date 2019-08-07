@@ -12,8 +12,8 @@ services:
       - .:/src
       - /src/node_modules
     ports:
-      - "8080:8080"
-      - "5858:5858"
+      - "8585:8080"
+      - "5555:5555"
     links:
       - mongo
   
