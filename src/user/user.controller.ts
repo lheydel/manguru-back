@@ -27,7 +27,8 @@ export class UserController {
      * Return a user after a jwt only authentication
      */
     public loginJWT(req: Request, res: Response) {
-        this._setJwtCookie(res, req.user, req.user.rememberMe)
+        const user = req.user! as User; // tmp quickfix just to build the app
+        this._setJwtCookie(res, user, user.rememberMe)
             .then(resp => {
                 resp.status(200)
                     .json(new UserDTO(req.user));
