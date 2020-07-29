@@ -14,8 +14,7 @@ cache:
 addons:
   sonarcloud:
     organization: lheydel-github
-    token:
-      secure: $SONAR_TOKEN
+    token: $SONAR_TOKEN
 
 script:
   # Build app
