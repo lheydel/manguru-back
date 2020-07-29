@@ -1,7 +1,8 @@
 export enum VersionStruct {
-    USER = 2
+    USER = 2,
 }
 
 export enum Route {
-    USER = '/user'
+    LOGIN = '/login',
+    USER = '/user',
 }

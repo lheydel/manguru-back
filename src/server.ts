@@ -1,9 +1,13 @@
-import app from './router';
-import { APP_PORT } from './config/app';
+import { environment } from './config/app';
+import { mikroInit } from './config/mikro';
 import { MigrationManager } from './migrations';
+import app from './router';
 
 // start serv
-app.listen(APP_PORT, async () => {
+app.listen(environment.app_port, async () => {
+    // setup orm
+    await mikroInit();
+
     // entity migrations
     const migrationManager = new MigrationManager();
     await migrationManager.doMigrations();
