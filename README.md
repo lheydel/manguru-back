@@ -68,38 +68,14 @@ Also, for a better code structure and development efficiency, [Typescript](https
 ## Database management
 This project connects to a document oriented database managed by [MongoDB](https://www.mongodb.com/fr), known for its high flexibility and adaptability.
 
-Also, to facilitate the interaction with this database, [Prisma](https://www.prisma.io/) is used as a middleware between NodeJS and MongoDB. It provides a support for [GraphQL](https://graphql.org/) schemas and automatically build an API from those to interact with the data within the database, which is then accessed by NodeJS.
+Also, to facilitate the interaction with this database, [MikroORM](https://b4nan.github.io/mikro-orm/) is used as a middleware between NodeJS and MongoDB. It provides an API to interact with the data within the database based on the definition of the entities of the project.
 
-> **Note** - When prisma is running on your machine, you can access the associated MongoDB instance on `http://localhost:27018`.
+> **Note** - When the app is running on your machine, you can access the associated MongoDB instance on `http://localhost:27018`.
 
 ## Tests
 The test runner used in this project is called [Jest](https://jestjs.io/). It manages unit, integration and end-to-end tests and works well with asynchroneous operations.
 
-To prevent the tests from ruining the data in your local database, a second setup is available in /prisma/test to deploy a second prisma instance. A script is provided to help you run the tests without having to think about it.
-
-> **Note** - This script is currently only available on Windows, but it will enventually be adapted for Linux environments if necessary.
-
-You can find the script at the root of the project under the name of `test.bat`. It deploys the prisma test instance, runs the tests and stops prisma, then redeploy your dev instance so that you don't have to do anything beside running this whenever you want to run your tests.
-
-To run it, go to the root of the project and call :
-```
-./test.bat
-```
-You can run jest in watch mode by adding the argument `-w` :
-```
-./test.bat -w
-```
-To rebuild the app before starting the tests, use `-b` :
-```
-./test.bat -b
-```
-It is also possible to run your tests without deploying the entire app by adding the argument `-d` :	
-```	
-./test.bat -d	
-```	
-With this option, the script will start prisma with the docker-compose available in /prisma before the tests, and stop it afterwards.
-
-> **Note** - If you try to pass anything other than the previous parameters, the script will just ignore it.
+> /!\ Important - The tests use your local database at http://localhost:27017. Make sure to have a MongoDB instance running.
 
 ## Code analysis
 To improve and maintain the global quality of the source code, this project uses a static code analysis tool named [Sonarqube](https://www.sonarqube.org/), which scan the project and detect code smells and security issues. It also get the test coverage stats from Jest.
@@ -119,9 +95,9 @@ In order to maintain a good overall quality, every update must be supported by r
 Also, please respect the general structure of the project to avoid any confusion.
 
 ## Database migrations
-[As said before](##database-management), the link between NodeJS and MongoDB is done by the middleware called Prisma. It provides an API to access the database. Both the API and the database are built and updated from a GraphQL schema.
+[As said before](##database-management), the link between NodeJS and MongoDB is done by the middleware called MikroORM. It provides an API to access the database. Both the API and the database are built and updated from the project entities declarations.
 
-Prisma make managing and accessing the data much easier, but has an important drawback which must be taken care of before starting a project. Indeed, whenever you want to change the structure of the database, you have to manage the migration of the data all by yourself, either by doing it manually, or by including a dedicated service in your code base. Prisma does not provide any script management for this task.
+MikroORM make managing and accessing the data much easier, but has an important drawback which must be taken care of before starting a project. Indeed, whenever you want to change the structure of the database, you have to manage the migration of the data all by yourself, either by doing it manually, or by including a dedicated service in your code base. MikroORM does not provide any script management for this task (at least at the time this was written).
 
 As it is annoying to do it manually, a solution has been setup in the project to make our life easier. This solution is based on the concept of **Version Struct**.
 
@@ -137,16 +113,17 @@ To update and access the latest VS available for an entity, refer to the enum `V
 > **Example** - If you want to change the structure of the entity User for the first time, you will update the value of `VersionStruct.USER` from `1` to `2`.
 
 ### Entity and Datamodel
-First things first, if you want to update an entity in the database, you will have to update both the entity model file and the prisma datamodel (located in the `prisma` folder).
+First things first, if you want to update an entity in the database, you will have to update the entity model.
 
 There are roughly three case scenarios when updating an entity. You can either **add**, **remove** or **edit** one or more properties.
 
 #### Adding a new property
-To create a new property, there is no special action to do beside adding it to both the model and prisma datamodel with the exact same name. 
+To create a new property, there is no special action to do beside adding it to the model with the annotation `@Property()`. 
 
-If the new property is required, don't forget to set a default value on the datamodel so that prisma doesn't block the migration. Example:
+Example:
 ```Typescript
-username: String! @default(value: "Mangurian")
+@Property()
+username: string;
 ```
 
 If the new property depends on other data of the entity, please refer to [Data migrations](###data-migrations).
@@ -154,21 +131,16 @@ If the new property depends on other data of the entity, please refer to [Data m
 #### Removing a property
 Removing a property is a delicate operation, as it causes a loss of data, which can't be migrated afterwards to another location since they don't exist anymore. As such, removing a property is prohibited.
 
-Instead, you can use the `@deprecated` annotation to signal the deprecation of a property. This annotation can be used in both the JSdoc of the attribute in the entity model, and directly on the property in the prisma datamodel. Also, dont forget to make this property optional.
+Instead, you can use the `@deprecated` annotation to signal the deprecation of a property. This annotation can be used in the JSdoc of the property in the entity model. Also, dont forget to make this property optional.
 
 > **Note** - When you deprecate an attribute, please indicate the date (with the format `YYYY/MM/DD`) and VS of deprecation.
 
-> **Example** - Let's say you have an entity `User` and you want to remove its `name` property.\
->Entity model:
+> **Example** - Let's say you have an entity `User` and you want to remove its `name` property:
 >```Typescript
 >/** @deprecated 2019/07/05 - vs2 */
->name ?= ''; 
+>name?: string; 
 >```
->Prisma datamodel:\
->```Typescript
->name: String @deprecated(reason: "2019/07/05 - vs2")
->```
-> With those annotations, we can know that `name` has been deprecated since the VS 2, at the date 2019/07/05.
+> With this annotation, we can know that `name` has been deprecated since the VS 2, at the date 2019/07/05.
 
 #### Editing a property
 Editing a property can mean many things. You can rename it, split it in multiple other properties, assemble several properties into one, etc..
@@ -179,11 +151,11 @@ However, all thoses operations are just a succession of adding and removing prop
 >Entity model:
 >```Typescript
 >/** @deprecated 2019/07/05 - vs2 - use [username] property instead */
->name ?= ''; 
+>name?: string; 
 >```
 
 ### Data migrations
-Changing the data structure obviously doesn't mean the data will adapt themselves by magic. We need some **migrator** services to upgrade them to the new strucure.
+Changing the data structure obviously doesn't mean the data will adapt themselves by using some weird magic. We need some **migrator** services to upgrade them to the new strucure.
 
 #### Migrator
 A migrator is a service dedicated to the migrations of a single entity. It implements the interface `BaseMigrator` which provides a set of standard functions.

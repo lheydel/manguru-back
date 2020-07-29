@@ -10,26 +10,10 @@ services:
     # --> code inside running container will update whenever local files are updated
     volumes:
       - .:/src
+      - /src/node_modules
     ports:
-      - "8080:8080"
-      - "5858:5858"
-    links:
-      - prisma
-      
-  prisma:
-    image: prismagraphql/prisma:1.34
-    restart: always
-    ports:
-    - "4466:4466"
-    environment:
-      PRISMA_CONFIG: |
-        port: 4466
-        # uncomment the next line and provide the env var PRISMA_MANAGEMENT_API_SECRET=my-secret to activate cluster security
-        # managementApiSecret: my-secret
-        databases:
-          default:
-            connector: mongo
-            uri: 'mongodb://mongo:27017'
+      - "8585:8080"
+      - "5555:5555"
     links:
       - mongo
   
@@ -40,10 +24,5 @@ services:
     #   - ./data:/data/db
     ports:
       - "27018:27017"
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: prisma
-    #   MONGO_INITDB_ROOT_PASSWORD: prisma
-    # volumes:
-    #   - mongo:/var/lib/mongo
 # volumes:
 #   mongo:

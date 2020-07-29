@@ -6,6 +6,13 @@ import { UserService } from '../../../src/user/user.service';
 
 const userMigrator = new UserMigrator();
 
+const expectedUser = {
+    ...userLatest(),
+    _id: expect.anything(),
+    createdAt: expect.anything(),
+    updatedAt: expect.anything(),
+};
+
 describe('needMigrations', () => {
     test.each`
         vs                          | expected
@@ -23,15 +30,17 @@ describe('needMigrations', () => {
 });
 
 describe('updateVersionStruct', () => {
-    test('upgrade from vs 1 to latest', () => {
-        const user = {...userV1};
+    test.each`
+        vs   | user
+        ${1} | ${userV1()}
+    `('upgrade from vs $vs to latest', ({ user }) => {
         userMigrator.upgradeVersionStruct(user);
-        expect(user).toEqual(userLatest);
+        expect(user).toMatchObject(expectedUser);
     });
 });
 
 test('doMigrations: migrate all versions to latest', async () => {
-    const userList: User[] = [userV1, userLatest];
+    const userList: User[] = [userV1(), userLatest()];
     UserService.prototype.getAllUsers = jest.fn().mockResolvedValue(userList);
     UserService.prototype.updateUserList = jest.fn();
 
@@ -40,7 +49,7 @@ test('doMigrations: migrate all versions to latest', async () => {
 
     // check if migration was done for all the old versions
     userList.forEach(user => {
-        expect(user).toEqual(userLatest);
+        expect(user).toMatchObject(expectedUser);
     });
 
     // check if migration was done only if necessary
